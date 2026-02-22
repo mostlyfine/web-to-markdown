@@ -1,22 +1,15 @@
 import { downloadMarkdown } from "./logic/file-downloader";
 
-chrome.action.onClicked.addListener(async (tab) => {
-  if (!tab.id) return;
-
-  const tabId = tab.id;
-
-  // content.ts を動的注入
+async function savePageAsMarkdown(tabId: number): Promise<void> {
   try {
     await chrome.scripting.executeScript({
       target: { tabId },
       files: ["src/content.js"],
     });
   } catch (err) {
-    // 既に注入済み、またはCSP違反の場合はそのまま続行
     console.warn("Script injection warning:", err);
   }
 
-  // content.ts へ変換リクエストを送信
   try {
     const response = await chrome.tabs.sendMessage(tabId, {
       type: "GET_MARKDOWN",
@@ -28,4 +21,15 @@ chrome.action.onClicked.addListener(async (tab) => {
   } catch (err) {
     console.error("Failed to get markdown:", err);
   }
+}
+
+chrome.action.onClicked.addListener((tab) => {
+  if (tab.id) savePageAsMarkdown(tab.id);
+});
+
+chrome.commands.onCommand.addListener(async (command) => {
+  if (command !== "save-as-markdown") return;
+
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab?.id) savePageAsMarkdown(tab.id);
 });
