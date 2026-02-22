@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "Web to Markdown"
+  },
+  "extensionDescription": {
+    "message": "Save any web page as a Markdown file with one click"
+  },
+  "commandDescription": {
+    "message": "Save page as Markdown"
+  }
+}

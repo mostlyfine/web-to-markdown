@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "Web to Markdown"
+  },
+  "extensionDescription": {
+    "message": "ワンクリックでWebページをMarkdown形式で保存"
+  },
+  "commandDescription": {
+    "message": "ページをMarkdownで保存"
+  }
+}
