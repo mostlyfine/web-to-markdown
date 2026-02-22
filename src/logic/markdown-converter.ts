@@ -1,5 +1,6 @@
 import { Readability } from "@mozilla/readability";
 import TurndownService from "turndown";
+import { gfm } from "turndown-plugin-gfm";
 
 function resolveUrl(url: string, baseUrl: string): string {
   try {
@@ -17,6 +18,8 @@ export function convertToMarkdown(): string {
     bulletListMarker: "-",
     codeBlockStyle: "fenced",
   });
+
+  turndown.use(gfm);
 
   // 相対URLを絶対URLに変換するカスタムルール
   turndown.addRule("absoluteLinks", {
