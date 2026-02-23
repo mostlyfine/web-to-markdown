@@ -23,6 +23,20 @@ async function savePageAsMarkdown(tabId: number): Promise<void> {
   }
 }
 
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: "save-as-markdown",
+    title: chrome.i18n.getMessage("contextMenuTitle"),
+    contexts: ["page"],
+  });
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "save-as-markdown" && tab?.id) {
+    savePageAsMarkdown(tab.id);
+  }
+});
+
 chrome.action.onClicked.addListener((tab) => {
   if (tab.id) savePageAsMarkdown(tab.id);
 });

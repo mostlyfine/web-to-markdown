@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "permissions": ["activeTab", "scripting", "downloads"],
+  "permissions": ["activeTab", "scripting", "downloads", "contextMenus"],
   "background": {
     "service_worker": "src/background.ts",
     "type": "module"
