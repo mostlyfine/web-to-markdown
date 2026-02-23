@@ -2,6 +2,29 @@ import { Readability } from "@mozilla/readability";
 import TurndownService from "turndown";
 import { gfm } from "turndown-plugin-gfm";
 
+// GFMのtablesルールはheading rowがないテーブルをHTMLのまま出力するため、
+// 事前に空のtheadを挿入してデータ行を保持する
+function normalizeTables(container: Document | HTMLElement): void {
+  container.querySelectorAll("table").forEach((table) => {
+    if (table.querySelector("thead")) return;
+
+    const firstRow = table.querySelector("tr");
+    if (!firstRow) return;
+
+    const doc = container instanceof Document ? container : document;
+    const colCount = firstRow.querySelectorAll("td, th").length;
+
+    // 空の th を並べた thead を先頭に挿入
+    const thead = doc.createElement("thead");
+    const headerRow = doc.createElement("tr");
+    for (let i = 0; i < colCount; i++) {
+      headerRow.appendChild(doc.createElement("th"));
+    }
+    thead.appendChild(headerRow);
+    table.insertBefore(thead, table.firstChild);
+  });
+}
+
 function resolveUrl(url: string, baseUrl: string): string {
   try {
     return new URL(url, baseUrl).href;
@@ -45,6 +68,7 @@ export function convertToMarkdown(): string {
 
   // Readabilityでメインコンテンツを抽出
   const docClone = document.cloneNode(true) as Document;
+  normalizeTables(docClone);
   const reader = new Readability(docClone);
   const article = reader.parse();
 
@@ -54,6 +78,7 @@ export function convertToMarkdown(): string {
 
   // フォールバック: 不要な要素を除去してbodyを変換
   const bodyClone = document.body.cloneNode(true) as HTMLElement;
+  normalizeTables(bodyClone);
   const removeSelectors = [
     "script",
     "style",
