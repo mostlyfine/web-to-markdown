@@ -5,16 +5,22 @@ import { gfm } from "turndown-plugin-gfm";
 // GFMのtablesルールはheading rowがないテーブルをHTMLのまま出力するため、
 // 事前に空のtheadを挿入してデータ行を保持する
 function normalizeTables(container: Document | HTMLElement): void {
+  const doc = container instanceof Document ? container : container.ownerDocument ?? document;
+
   container.querySelectorAll("table").forEach((table) => {
+    // テーブルセル内の <br> をリテラル <br> テキストに置換
+    table.querySelectorAll("td br, th br").forEach((br) => {
+      br.replaceWith(doc.createTextNode("<br>"));
+    });
+
+    // 既存のthead挿入ロジック
     if (table.querySelector("thead")) return;
 
     const firstRow = table.querySelector("tr");
     if (!firstRow) return;
 
-    const doc = container instanceof Document ? container : document;
     const colCount = firstRow.querySelectorAll("td, th").length;
 
-    // 空の th を並べた thead を先頭に挿入
     const thead = doc.createElement("thead");
     const headerRow = doc.createElement("tr");
     for (let i = 0; i < colCount; i++) {
