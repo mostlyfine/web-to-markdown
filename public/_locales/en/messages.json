@@ -10,5 +10,8 @@
   },
   "contextMenuTitle": {
     "message": "Save as Markdown"
+  },
+  "contextMenuTitleRaw": {
+    "message": "Save as Markdown (without Readability)"
   }
 }

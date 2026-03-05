@@ -13,10 +13,10 @@ if (!window.markdownConverterInitialized) {
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message.type === "GET_MARKDOWN") {
       const markdown = convertToMarkdown();
-      sendResponse({
-        title: document.title,
-        markdown,
-      });
+      sendResponse({ title: document.title, markdown });
+    } else if (message.type === "GET_MARKDOWN_RAW") {
+      const markdown = convertToMarkdown(false);
+      sendResponse({ title: document.title, markdown });
     }
     return true;
   });

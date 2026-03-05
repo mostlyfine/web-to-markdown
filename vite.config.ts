@@ -8,4 +8,8 @@ export default defineConfig({
       additionalInputs: ["src/content.ts"],
     }),
   ],
+  test: {
+    environment: "jsdom",
+    globals: true,
+  },
 });

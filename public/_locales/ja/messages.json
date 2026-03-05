@@ -10,5 +10,8 @@
   },
   "contextMenuTitle": {
     "message": "Markdownで保存"
+  },
+  "contextMenuTitleRaw": {
+    "message": "Markdownで保存 (RAW)"
   }
 }
