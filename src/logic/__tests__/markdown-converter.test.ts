@@ -84,6 +84,29 @@ describe("convertToMarkdown(raw)", () => {
     expect(result).toContain("1");
   });
 
+  it("theadが複数あるテーブルは余分なtheadを削除して変換する", () => {
+    setBody(`
+      <main>
+        <table>
+          <thead><tr><th>列A</th><th>列B</th></tr></thead>
+          <thead><tr><th>補助A</th><th>補助B</th></tr></thead>
+          <tbody><tr><td>1</td><td>2</td></tr></tbody>
+        </table>
+      </main>
+    `);
+    const result = convertToMarkdown(false);
+    // 最初のtheadの内容は残る
+    expect(result).toContain("列A");
+    expect(result).toContain("列B");
+    expect(result).toContain("1");
+    // 余分なtheadの内容は削除される
+    expect(result).not.toContain("補助A");
+    expect(result).not.toContain("補助B");
+    // GFMセパレータ行が1行だけ含まれることを確認
+    const separators = result.match(/^\|(?:[ :]*-+[ :]*\|)+$/mg) ?? [];
+    expect(separators).toHaveLength(1);
+  });
+
   it("theadがないテーブルに空のheaderを挿入して変換する", () => {
     setBody(`
       <main>

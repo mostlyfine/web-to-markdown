@@ -20,8 +20,17 @@ function normalizeTables(container: Document | HTMLElement): void {
       }
     });
 
-    // 事前に空のtheadを挿入してデータ行を保持する
-    if (!table.querySelector("thead")) {
+    // theadの数に応じてテーブルヘッダーを正規化する
+    const theads = Array.from(table.children).filter(
+      (child): child is HTMLTableSectionElement => child.tagName === "THEAD"
+    );
+    if (theads.length > 1) {
+      // 余分なtheadは削除する
+      for (const extraThead of theads.slice(1)) {
+        extraThead.remove();
+      }
+    } else if (theads.length === 0) {
+      // theadがない場合は空のtheadを挿入してデータ行を保持する
       const firstRow = table.querySelector("tr");
       if (firstRow) {
         const colCount = firstRow.querySelectorAll("td, th").length;
